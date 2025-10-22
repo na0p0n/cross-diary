@@ -26,7 +26,7 @@ jobs:
           key: ${{ secrets.STG_SSH_KEY }}
 
           # STGサーバー上で実行するコマンド
-          script:
+          script: |
             # 1. アプリのディレクトリに移動 (STG環境のパス)
             cd /var/www/stg-cross-diary/cross-diary
             
