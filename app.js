@@ -21,6 +21,7 @@ app.get('/', (req, res) => {
 })
 app.get('/login', (req, res) => {
   res.render('login', { 
+    pageTitle: 'ログイン',
     isLoggedIn: false,
     user: null // ユーザー情報なし
   });
@@ -28,6 +29,7 @@ app.get('/login', (req, res) => {
 
 app.get('/signup', (req, res) => {
   res.render('signup', { 
+    pageTitle: "サインアップ",
     isLoggedIn: false,
     user: null // ユーザー情報なし
   });
