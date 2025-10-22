@@ -5,7 +5,7 @@ name: Deploy to Staging
 on:
   push:
     branches:
-      - origin/stg
+      - stg
 
 # 実行するジョブ
 jobs:
