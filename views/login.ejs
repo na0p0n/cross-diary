@@ -3,24 +3,48 @@
   <head>
     <%- include('partials/head', { pageTitle: (typeof pageTitle !== 'undefined' ? pageTitle : null) }) %>
   </head>
-  <body>
+  <body class="bg-light">
     <%- include('partials/header') %>
-
-    <div class="container mt-4">
-      <h1>ユーザー名とパスワードでログイン</h1>
-      <form action="/login" method="POST">
-        <div class="mb-3">
-          <label for="username" class="form-label">ユーザー名</label>
-          <input type="text" class="form-control" id="username" name="username" required>
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">パスワード</label>
-          <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <button type="submit" class="btn btn-primary">ログイン</button>
-      </form>
+    
+    <% if (error !== 'undefined') { %>
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+      <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+      <div>
+        An example danger alert with an icon
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    <% } %>
 
+    <div class="container">
+      <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-lg-5">
+          <div class="card shadow-sm">
+            <div class="card-body p-4 p-md-5">
+              <h2 class="text-center mb-4">ユーザー名とパスワードでログイン</h2>
+
+              <form action="/login" method="POST">
+                <div class="mb-3">
+                  <label for="emailInput" class="form-label">メールアドレス</label>
+                  <input type="email" class="form-control" id="emailInput" name="email" required>
+                </div>
+                <div class="mb-3">
+                  <label for="passwordInput" class="form-label">パスワード</label>
+                  <input type="password" class="form-control" id="passwordInput" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">ログイン</button>
+              </form>
+
+              <hr class="my-4">
+              <div class="text-center">
+                <p class="mb-0">アカウントをお持ちでないですか？</p>
+                <a href="/register">新規登録はこちら</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
