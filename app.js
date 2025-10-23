@@ -3,6 +3,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const messages = require('./config/message');
 const path = require('path'); // Node.js標準のモジュール
 const app = express();
 const port = process.env.PORT || 3000;
@@ -78,8 +79,12 @@ app.post('/login', async (req, res) => {
     )
 
     if(users.length === 0) {
-      console.log('ユーザーが見つかりません');
-      return res.redirect('/login');
+      res.render('login', { 
+        pageTitle: 'ログイン',
+        isLoggedIn: false,
+        user: null, // ユーザー情報なし,
+        error: messages.AUTH.AUTH_FAILED
+      });
     }
 
     const user = users[0];
@@ -93,12 +98,20 @@ app.post('/login', async (req, res) => {
 
       res.redirect('/');
     } else {
-      console.log('パスワードが違います');
-      res.redirect('/login');
+      res.render('login', { 
+        pageTitle: 'ログイン',
+        isLoggedIn: false,
+        user: null, // ユーザー情報なし,
+        error: messages.AUTH.AUTH_FAILED
+      });
     }
   } catch (err) {
-    console.error(err);
-    res.redirect('/login');
+    res.render('login', { 
+      pageTitle: 'ログイン',
+      isLoggedIn: false,
+      user: null, // ユーザー情報なし,
+      error: messages.AUTH.LOGIN_PROCESS_ERROR
+    });
   }
 });
 
