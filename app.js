@@ -79,7 +79,7 @@ app.post('/login', async (req, res) => {
     )
 
     if(users.length === 0) {
-      res.render('login', { 
+      res.render('signin', { 
         pageTitle: 'ログイン',
         isLoggedIn: false,
         user: null, // ユーザー情報なし,
@@ -96,9 +96,15 @@ app.post('/login', async (req, res) => {
       req.session.display_name = user.display_name;
       req.session.icon_url = user.icon_url;
 
-      res.redirect('/');
+      res.render('index', {
+        isLoggedIn: false,
+        user: {
+          display_name: req.session.display_name,
+          icon_url: req.session.icon_url
+        }
+      });
     } else {
-      res.render('login', { 
+      res.render('signin', { 
         pageTitle: 'ログイン',
         isLoggedIn: false,
         user: null, // ユーザー情報なし,
@@ -106,7 +112,7 @@ app.post('/login', async (req, res) => {
       });
     }
   } catch (err) {
-    res.render('login', { 
+    res.render('signin', { 
       pageTitle: 'ログイン',
       isLoggedIn: false,
       user: null, // ユーザー情報なし,
@@ -122,21 +128,16 @@ app.get('/logout', (req, res) => {
     }
 
     res.clearCookie('connect.sid');
-    res.redirect('/login')
+    res.redirect('/signin')
   })
 })
 app.get('/', isAuthenticated, (req, res) => {
-  const currentUser ={
-    display_name: req.session.display_name,
-    icon_url: req.session.icon_url
-  }
   res.render('index', {
-    isLoggedIn: true,
-    user:currentUser
+    isLoggedIn: false,
   });
 })
-app.get('/login', (req, res) => {
-  res.render('login', { 
+app.get('/signin', (req, res) => {
+  res.render('signin', { 
     pageTitle: 'ログイン',
     isLoggedIn: false,
     user: null // ユーザー情報なし
