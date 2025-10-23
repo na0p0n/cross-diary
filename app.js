@@ -138,7 +138,8 @@ app.get('/signin', (req, res) => {
   res.render('signin', { 
     pageTitle: 'ログイン',
     isLoggedIn: false,
-    user: null // ユーザー情報なし
+    user: null, // ユーザー情報なし
+    error: null
   });
 });
 
