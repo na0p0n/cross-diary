@@ -28,7 +28,7 @@ function isAuthenticated(req, res, next) {
   if (req.session.userId) {
     next();
   } else {
-    res.redirect('/login')
+    res.redirect('/signin')
   }
 }
 app.use(express.json());
@@ -62,7 +62,7 @@ app.post('/register', async (req, res) => {
       [email, passwordHash, display_name]
     )
 
-    res.redirect('/login');
+    res.redirect('/signin');
   } catch (err) {
     console.error(err);
     res.redirect('/register');
@@ -96,13 +96,7 @@ app.post('/login', async (req, res) => {
       req.session.display_name = user.display_name;
       req.session.icon_url = user.icon_url;
 
-      res.render('index', {
-        isLoggedIn: false,
-        user: {
-          display_name: req.session.display_name,
-          icon_url: req.session.icon_url
-        }
-      });
+      res.redirect('/');
     } else {
       res.render('signin', { 
         pageTitle: 'ログイン',
@@ -133,7 +127,11 @@ app.get('/logout', (req, res) => {
 })
 app.get('/', isAuthenticated, (req, res) => {
   res.render('index', {
-    isLoggedIn: false,
+    isLoggedIn: true,
+    user: {
+      display_name: req.session.display_name,
+      icon_url: req.session.icon_url
+    }
   });
 })
 app.get('/signin', (req, res) => {
