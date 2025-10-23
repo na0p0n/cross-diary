@@ -6,11 +6,11 @@
   <body class="bg-light">
     <%- include('partials/header') %>
     
-    <% if (error !== 'undefined') { %>
+    <% if (error) { %>
     <div class="alert alert-danger d-flex align-items-center" role="alert">
       <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
       <div>
-        An example danger alert with an icon
+        <%= error %>
       </div>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
