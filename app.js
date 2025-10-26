@@ -5,6 +5,7 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const messages = require('./config/message');
 const path = require('path'); // Node.js標準のモジュール
+const { upload, uploadIconToMinio } = require('./config/iconUpload');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -16,6 +17,7 @@ app.set('view engine', 'ejs');
 const options = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT || 3306,
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   clearExpired: true,
@@ -31,8 +33,8 @@ function isAuthenticated(req, res, next) {
     res.redirect('/signin')
   }
 }
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+app.use(express.urlencoded({ extended: false }));
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -49,31 +51,36 @@ app.use(session({
   }
 }));
 
-app.post('/register', async (req, res) => {
-  try {
-    const { email, password, display_name } = req.body;
+app.post(
+  '/register',
+  upload.single('iconFile'),
+  uploadIconToMinio,
+  async (req, res, next) => {
+    try {
+      const { email, password, displayName, userName, iconUrl } = req.body;
 
-    const saltRounds = 10;
+      const saltRounds = 10;
 
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+      const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    await pool.query(
-      'INSERT INTO users (email, password_hash, display_name) VALUES (?, ?, ?)',
-      [email, passwordHash, display_name]
-    )
+      await sessionStore.query(
+        'INSERT INTO users (email, password_hash, display_name, userName, iconUrl) VALUES (?, ?, ?, ?, ?)',
+        [email, passwordHash, displayName, userName, iconUrl || null ]
+      );
 
-    res.redirect('/signin');
-  } catch (err) {
-    console.error(err);
-    res.redirect('/register');
+      res.redirect('/signin');
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
   }
-});
+);
 
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const [users] = await pool.query(
+    const [users] = await sessionStore.query(
       'SELECT * FROM users WHERE email = ?',
       [email]
     )
@@ -147,9 +154,21 @@ app.get('/signup', (req, res) => {
   res.render('signup', { 
     pageTitle: "サインアップ",
     isLoggedIn: false,
-    user: null // ユーザー情報なし
+    user: null, // ユーザー情報なし
+    error: null
   });
 })
+
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.render('signup', {
+    pageTitle: "サインアップ",
+    isLoggedIn: false,
+    user: null,
+    error: err.message
+  });
+});
 
 // サーバーを起動
 app.listen(port, () => {

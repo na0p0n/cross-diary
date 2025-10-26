@@ -6,9 +6,56 @@
   <body>
     <%- include('partials/header') %>
 
-    <div class="container mt-4">
-      <h1>登録画面</h1>
-      <button type="button" class="btn btn-primary">Bootstrapのボタン</button>
+    <% if (error) { %>
+    <div class="alert alert-denger d-flex aligin-items-center" role="alert">
+      <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+      <div>
+        <%= error %>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <% } %>
+
+    <div class="container">
+      <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-lg-5">
+          <div class="card shadow-sm">
+            <div class="card-body p-4 p-md-5">
+              <h2 class="text-center mb-4">新規登録</h2>
+
+              <form action="/register" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label for="userNameInput" class="form-label">ユーザー名</label>
+                  <input type="text" class="form-control" id="userNameInput" name="userName" required>
+                </div>
+                <div class="mb-3">
+                  <label for="displayNameInput" class="form-label">表示名</label>
+                  <input type="text" class="form-control" id="displayNameInput" name="displayName" required>
+                </div>
+                <div class="mb-3">
+                  <label for="iconFileInput" class="form-label">アイコン画像をアップロード</label>
+                  <input type="file" class="form-control" id="formFile" name="iconFile" required>
+                </div>
+                <div class="mb-3">
+                  <label for="emailInput" class="form-label">メールアドレス</label>
+                  <input type="email" class="form-control" id="emailInput" name="email" required>
+                </div>
+                <div class="mb-3">
+                  <label for="passwordInput" class="form-label">パスワード</label>
+                  <input type="password" class="form-control" id="passwordInput" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">登録</button>
+              </form>
+
+              <hr class="my-4">
+              <div class="text-center">
+                <p class="mb-0">すでにアカウントを作成済みですか？</p>
+                <a href="/signin">ログインはこちら</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

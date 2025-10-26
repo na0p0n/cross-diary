@@ -12,6 +12,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.623.0",
     "bcrypt": "^6.0.0",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
@@ -20,7 +21,9 @@
     "express": "^5.1.0",
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.2",
-    "pm2": "^6.0.13"
+    "multer": "^2.0.2",
+    "pm2": "^6.0.13",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
