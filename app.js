@@ -64,7 +64,7 @@ app.post(
       const passwordHash = await bcrypt.hash(password, saltRounds);
 
       await sessionStore.query(
-        'INSERT INTO users (email, password_hash, display_name, userName, iconUrl) VALUES (?, ?, ?, ?, ?)',
+        'INSERT INTO users (email, password_hash, display_name, user_name, icon_url) VALUES (?, ?, ?, ?, ?)',
         [email, passwordHash, displayName, userName, iconUrl || null ]
       );
 
