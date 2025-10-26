@@ -117,7 +117,8 @@ app.post('/login', async (req, res) => {
       pageTitle: 'ログイン',
       isLoggedIn: false,
       user: null, // ユーザー情報なし,
-      error: messages.AUTH.LOGIN_PROCESS_ERROR
+      // error: messages.AUTH.LOGIN_PROCESS_ERROR
+      error: err
     });
   }
 });
