@@ -99,7 +99,7 @@ app.post('/login', async (req, res) => {
     const match = await bcrypt.compare(password, user.password_hash);
 
     if (match) {
-      req.session.userId = user.id;
+      req.session.userName = user.user_name;
       req.session.display_name = user.display_name;
       req.session.icon_url = user.icon_url;
 
@@ -138,7 +138,7 @@ app.get('/', isAuthenticated, (req, res) => {
     isLoggedIn: true,
     user: {
       display_name: req.session.display_name,
-      icon_url: req.session.icon_url
+      icon_url: req.session.icon_url,
     }
   });
 })
@@ -149,6 +149,46 @@ app.get('/signin', (req, res) => {
     user: null, // ユーザー情報なし
     error: null
   });
+});
+
+app.get('/profile/edit', async (req, res) => {
+  try {
+    const userId = req.session.userName;
+
+    const [accountInfo] = await sessionStore.query(
+      `
+      SELECT
+        email,
+        user_name,
+        display_name,
+        icon_url
+      FROM users
+      WHERE user_name = ?
+      `,
+      [userId]
+    );
+
+    if (accountInfo.length === 0) {
+      return res.redirect('/');
+    }
+
+    const userData = accountInfo[0];
+
+    res.render('profile', {
+      pageTitle: 'ユーザー情報',
+      isLoggedIn: true,
+      user: {
+        email: userData.email,
+        user_name: userData.user_name,
+        display_name: userData.display_name,
+        icon_url: userData.icon_url
+      },
+      error: null
+    })
+  } catch (err) {
+    console.error(err);
+    res.redirect('/');
+  }
 });
 
 app.get('/signup', (req, res) => {
