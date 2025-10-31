@@ -27,7 +27,7 @@ const options = {
 const sessionStore = new MySQLStore(options);
 
 function isAuthenticated(req, res, next) {
-  if (req.session.userId) {
+  if (req.session.display_name) {
     next();
   } else {
     res.redirect('/signin')
@@ -46,7 +46,7 @@ app.use(session({
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'prod',
     sameSite: 'lax'
   }
 }));
@@ -97,11 +97,11 @@ app.post('/login', async (req, res) => {
     const user = users[0];
 
     const match = await bcrypt.compare(password, user.password_hash);
-
     if (match) {
       req.session.userName = user.user_name;
       req.session.display_name = user.display_name;
       req.session.icon_url = user.icon_url;
+      console.log(user.display_name);
 
       res.redirect('/');
     } else {
@@ -151,7 +151,7 @@ app.get('/signin', (req, res) => {
   });
 });
 
-app.get('/profile/edit', async (req, res) => {
+app.get('/profile/edit', isAuthenticated, async (req, res) => {
   try {
     const userId = req.session.userName;
 
