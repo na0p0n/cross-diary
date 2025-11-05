@@ -28,7 +28,19 @@
                                         <div class="col-3 text-center"><h3>ユーザー名</h3></div>
                                         <h3 class="col-6 text-center"><%= user.user_name %></h3>
                                         <div class="col-3 text-end">
-                                        <button type="button" class="btn btn-secondary">変更</button>
+                                            <button
+                                                type="button" 
+                                                class="btn btn-secondary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#updateModal"
+                                                data-modal-title="ユーザー名を変更する"
+                                                data-current=<%= user.user_name %>
+                                                data-display-item="ユーザー名"
+                                                data-input-type="text"
+                                                data-endpoint="/api/profile/edit/username"
+                                            >
+                                                変更
+                                            </button>
                                         </div>
                                     </div>
                                     <hr class="my-4">
@@ -36,7 +48,19 @@
                                         <div class="col-3 text-center"><h3>メールアドレス</h3></div>
                                         <h3 class="col-6 text-center"><%= user.email %></h3>
                                         <div class="col-3 text-end">
-                                            <button type="button" class="btn btn-secondary">変更</button>
+                                            <button
+                                                type="button" 
+                                                class="btn btn-secondary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#updateModal"
+                                                data-modal-title="メールアドレスを変更する"
+                                                data-current=<%= user.email %>
+                                                data-display-item="メールアドレス"
+                                                data-input-type="email"
+                                                data-endpoint="/api/profile/edit/email"
+                                            >
+                                                変更
+                                            </button>
                                         </div>
                                     </div>
                                     <hr class="my-4">
@@ -44,7 +68,19 @@
                                         <div class="col-3 text-center"><h3>表示名</h3></div>
                                         <h3 class="col-6 text-center"><%= user.display_name %></h3>
                                         <div class="col-3 text-end">
-                                            <button type="button" class="btn btn-secondary">変更</button>
+                                            <button
+                                                type="button" 
+                                                class="btn btn-secondary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#updateModal"
+                                                data-modal-title="表示名を変更する"
+                                                data-current=<%= user.display_name %>
+                                                data-display-item="表示名"
+                                                data-input-type="text"
+                                                data-endpoint="/api/profile/edit/displayname"
+                                            >
+                                                変更
+                                            </button>
                                         </div>
                                     </div>
                                     <hr class="my-4">
@@ -53,28 +89,11 @@
                                             <button type="button" class="btn btn-danger">パスワードを変更する</button>
                                         </div>
                                         <div class="col-4">
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            <button type="button" class="btn btn-primary">
                                             Launch demo modal
                                             </button>
 
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    ...
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                                </div>
-                                                </div>
-                                            </div>
-                                            </div>
+                                            
                                         </div>
                                         <div class="col-4 text-center">
                                             <button type="button" class="btn btn-danger">アカウントを削除する</button>
@@ -89,7 +108,39 @@
         </div>
     </div>
 
+    <%- include('partials/update-modal') %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
+    <script>
+        const updateModal = document.getElementById('updateModal');
+        updateModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+
+            const displayItemText = button.getAttribute('data-display-item');
+            const titleText = button.getAttribute('data-modal-title');
+            const userNameText = button.getAttribute('data-current');
+            const inputType = button.getAttribute('data-input-type');
+            const endpoint = button.getAttribute('data-endpoint');
+
+            const modalTitle = updateModal.querySelector('#dynamicModalTitle');
+            const modalCurrentDisplayItemText = updateModal.querySelector('#CurrentDisplayItemText');
+            const modalChangeDisplayItemText = updateModal.querySelector('#ChangeDisplayItemText');
+            const modalItemCurrentData = updateModal.querySelector('#dynamicModalCurrentData');
+            const modalInputField = updateModal.querySelector('#updateFormInput');
+            const modalUpdateForm = updateModal.querySelector('#userDataUpdateForm');
+
+            modalTitle.textContent = titleText;
+            modalCurrentDisplayItemText.textContent = "変更前の" + displayItemText;
+            modalChangeDisplayItemText.textContent = "変更後の" + displayItemText;
+            modalItemCurrentData.textContent = userNameText;
+
+            modalInputField.type = inputType || 'text';
+            modalUpdateForm.action = endpoint;
+
+            updateModal.addEventListener('shown.bs.modal', () => {
+                fieldInput.focus();
+            }, { once: true });
+        });
+    </script>
+</body>
 
 </html>

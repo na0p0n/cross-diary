@@ -8,6 +8,7 @@ const path = require('path'); // Node.js標準のモジュール
 const { upload, uploadIconToMinio } = require('./config/iconUpload');
 const app = express();
 const port = process.env.PORT || 3000;
+const router = require('./routes/profileRoutes');
 
 // 'public' フォルダを静的ファイルの配信フォルダとして設定
 app.use(express.static(path.join(__dirname, 'public')));
@@ -35,6 +36,7 @@ function isAuthenticated(req, res, next) {
 }
 
 app.use(express.urlencoded({ extended: false }));
+app.use('/api/profile', router);
 app.set('trust proxy', 1);
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -122,7 +124,6 @@ app.post('/login', async (req, res) => {
     });
   }
 });
-
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
