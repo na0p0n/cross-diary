@@ -13,5 +13,10 @@ module.exports = {
     VALIDATION: {
         EMAIL_REQUIRED: "メールアドレスは必須です。",
         PASSWORD_TOO_SHORT: "パスワードは8文字以上で設定してください。",
+    },
+
+    SQL_ERROR: {
+        ER_DUP_EMAIL: "そのメールアドレスはすでに登録されています。",
+        ER_DUP_USERNAME: "そのユーザー名はすでに登録されています。",
     }
 }

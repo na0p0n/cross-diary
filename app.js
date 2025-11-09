@@ -35,6 +35,13 @@ function isAuthenticated(req, res, next) {
   }
 }
 
+async function fetchUserData() {
+  const [users] = await sessionStore.query(
+    'SELECT * FROM users WHERE email = ?',
+    [email]
+  )
+}
+
 app.use(express.urlencoded({ extended: false }));
 app.use('/api/profile', router);
 app.set('trust proxy', 1);
@@ -66,7 +73,7 @@ app.post(
       const passwordHash = await bcrypt.hash(password, saltRounds);
 
       await sessionStore.query(
-        'INSERT INTO users (email, password_hash, display_name, user_name, icon_url) VALUES (?, ?, ?, ?, ?)',
+        'INSERT INTO users (email, password_hash, display_name, user_name, icon_url, user_uuid) VALUES (?, ?, ?, ?, ?, UUID())',
         [email, passwordHash, displayName, userName, iconUrl || null ]
       );
 
@@ -103,6 +110,7 @@ app.post('/login', async (req, res) => {
       req.session.userName = user.user_name;
       req.session.display_name = user.display_name;
       req.session.icon_url = user.icon_url;
+      req.session.userUuid = user.user_uuid;
       console.log(user.display_name);
 
       res.redirect('/');
@@ -135,6 +143,7 @@ app.get('/logout', (req, res) => {
   })
 })
 app.get('/', isAuthenticated, (req, res) => {
+  
   res.render('index', {
     isLoggedIn: true,
     user: {
@@ -154,7 +163,7 @@ app.get('/signin', (req, res) => {
 
 app.get('/profile/edit', isAuthenticated, async (req, res) => {
   try {
-    const userId = req.session.userName;
+    const userUuid = req.session.userUuid;
 
     const [accountInfo] = await sessionStore.query(
       `
@@ -162,11 +171,12 @@ app.get('/profile/edit', isAuthenticated, async (req, res) => {
         email,
         user_name,
         display_name,
-        icon_url
+        icon_url,
+        user_uuid
       FROM users
-      WHERE user_name = ?
+      WHERE user_uuid = ?
       `,
-      [userId]
+      [userUuid]
     );
 
     if (accountInfo.length === 0) {
@@ -182,7 +192,8 @@ app.get('/profile/edit', isAuthenticated, async (req, res) => {
         email: userData.email,
         user_name: userData.user_name,
         display_name: userData.display_name,
-        icon_url: userData.icon_url
+        icon_url: userData.icon_url,
+        uuid: userData.user_uuid
       },
       error: null
     })

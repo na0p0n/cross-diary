@@ -8,14 +8,19 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div id="liveAlertPlaceholder"></div>
+                    <input type="hidden" id="modalUserUuid" name="userUuid">
                     <div name="current" class="mb-3 row">
                         <label class="col-sm-4 col-form-label" id="CurrentDisplayItemText">変更前のxxx</label>
-                        <label class="col-sm-7 col-form-label" id="dynamicModalCurrentData"></label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="dynamicModalCurrentData" name="currentValue" readonly>
+                            <!-- <label class="col-sm-7 col-form-label" id="dynamicModalCurrentData" name="currentValue"></label> -->
+                        </div>
                     </div>
                     <div name="change" class="mb-3 row">
                         <label class="col-sm-4 col-form-label" id="ChangeDisplayItemText">変更後のxxx</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control" id="updateFormInput">
+                            <input type="text" class="form-control" id="updateFormInput" name="updateValue">
                         </div>
                     </div>
                 </div>
